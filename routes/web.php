@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +24,7 @@ Route::prefix('admin')
     ->namespace('App\Http\Controllers\Admin')
     ->group(function () {
         Route::resource('user', 'UserController');
+        Route::resource('permission', 'PermissionController');
     });
 
 Auth::routes();
