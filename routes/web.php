@@ -16,3 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('admin')
+    ->middleware(['auth', 'role:superadmin'])
+    ->name('admin.')
+    ->namespace('App\Http\Controllers\Admin')
+    ->group(function () {
+        Route::resource('user', 'UserController');
+    });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
