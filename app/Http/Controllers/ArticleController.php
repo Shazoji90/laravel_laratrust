@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use Laratrust;
 use App\Traits\FlashAlert;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -13,6 +14,7 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $articles = Article::paginate(10);
@@ -55,22 +57,47 @@ class ArticleController extends Controller
      */
     public function edit(string $id)
     {
+        // try {
+        //     $article = Article::findOrFail($id);
+
+        //     if (
+        //         request()->user()->hasRole(['superadmin', 'admin']) ||
+        //         request()->user()->isAbleToAndOwns('articles-update', $article)
+        //     ) {
+        //         return view('pages.article.edit', compact('article'));
+        //     } else {
+        //         return redirect()->route('article.index')->with($this->permissionDenied());
+        //     }
+
+
+        // } catch (ModelNotFoundException $e) {
+        //     return redirect()->route('article.index')->with($this->alertNotFound());
+        // }
+
         try {
             $article = Article::findOrFail($id);
+            $user = request()->user();
+            // $options = [ 'user_id_match' => $user->id === $article->user_id ];
+            // $check = $user->isAbleTo('articles-update');
+            // $check = $user->ability('articles-update', $options);
+            // dd($check);
 
             if (
-                request()->user()->hasRole(['superadmin', 'admin']) ||
-                request()->user()->isAbleToAndOwns('update-articles', $article)
+                // request()->user()->hasRole(['superadmin', 'admin']) ||
+                // request()->user()->isAbleToAndOwns('articles-update', $article)
+                $user->hasRole(['superadmin', 'admin']) ||
+                $user->isAbleTo('articles-update')
+
             ) {
                 return view('pages.article.edit', compact('article'));
             } else {
                 return redirect()->route('article.index')->with($this->permissionDenied());
             }
 
-
         } catch (ModelNotFoundException $e) {
             return redirect()->route('article.index')->with($this->alertNotFound());
         }
+
     }
 
     /**
@@ -80,10 +107,13 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::findOrFail($id);
+            $user = request()->user();
 
             if (
-                request()->user()->hasRole(['superadmin', 'admin']) ||
-                request()->user()->isAbleToAndOwns('update-articles', $article)
+                // request()->user()->hasRole(['superadmin', 'admin']) ||
+                // request()->user()->isAbleToAndOwns('articles-update', $article)
+                $user->hasRole(['superadmin', 'admin']) ||
+                $user->isAbleTo('articles-update')
             ) {
                 $this->validate($request, [
                     'title' => ['required', 'string', 'max:255'],
@@ -110,10 +140,13 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::findOrFail($id);
+            $user = request()->user();
 
             if (
-                request()->user()->hasRole('superadmin') ||
-                request()->user()->isAbleToAndOwns('delete-articles', $article)
+                // request()->user()->hasRole('superadmin') ||
+                // request()->user()->isAbleToAndOwns('articles-delete', $article)
+                $user->hasRole(['superadmin']) ||
+                $user->isAbleTo('articles-delete')
             ) {
                 $article->delete();
 

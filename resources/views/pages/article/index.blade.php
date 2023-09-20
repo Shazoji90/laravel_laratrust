@@ -7,7 +7,9 @@
             <div class="card">
                 <div class="card-header">
                     Articles
+                    @role('superadmin|admin|user')
                     <a href="{{ route('article.create') }}" class="btn btn-sm btn-secondary float-end">Create</a>
+                    @endrole
                 </div>
 
                 <div class="card-body">
@@ -23,7 +25,9 @@
                                 <th>Title</th>
                                 <th>Author</th>
                                 <th>Published</th>
+                                @role('superadmin|admin|user')
                                 <th></th>
+                                @endrole
                             </tr>
                         </thead>
                         <tbody>
@@ -33,6 +37,7 @@
                                 <td>{{ $article->title }}</td>
                                 <td>{{ $article->user->name }}</td>
                                 <td>{{ $article->published ? 'Published' : 'Unpublished' }}</td>
+                                @role('superadmin|admin|user')
                                 <td>
                                     <form action="{{ route('article.destroy', $article->id) }}" method="post">
                                         @method('DELETE') @csrf
@@ -42,6 +47,7 @@
                                         </div>
                                     </form>
                                 </td>
+                                @endrole
                             </tr>
                             @endforeach
                         </tbody>

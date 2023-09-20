@@ -33,4 +33,8 @@ Route::prefix('admin')
         Route::resource('role', 'RoleController');
     });
 
-Route::resource('article', ArticleController::class);
+// Route::resource('article', ArticleController::class);
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('article', 'ArticleController');
+});
